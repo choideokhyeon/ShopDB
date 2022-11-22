@@ -14,6 +14,13 @@ public class ProdDTO extends DTO{
 		this.price = price;
 	}
 	
+	public ProdDTO(String prodname, int prodamount, int price)
+	{
+		this.prodName = prodname;
+		this.prodAmount = prodamount;
+		this.price = price;
+	}
+	
 	ProdDTO(){}
 
 	public int getProdCode() {

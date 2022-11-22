@@ -3,15 +3,19 @@ package Team.View;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import Team.Controller.FrontController;
-import Team.Domain.DTO;
 import Team.Domain.MemDAO;
 import Team.Domain.MemDTO;
+import Team.Domain.ProdDTO;
 
 public class GUIView extends JFrame implements ActionListener {
 	
@@ -21,7 +25,7 @@ public class GUIView extends JFrame implements ActionListener {
 	
 	
 	//액션 처리 관련 멤버
-	JButton btn1;JButton btn2;JButton btn3;JButton btn4;JButton btn5;JButton btn6;
+	JButton btn1;JButton btn2;JButton btn3;JButton btn4;JButton btn5;JButton btn6;JButton btn7;
 	JLabel lbprodname;
 	JTextField txprodname;
 	JTextArea area;JScrollPane scroll;
@@ -44,13 +48,13 @@ public class GUIView extends JFrame implements ActionListener {
 	JTextField txjoinName;JTextField txjoinAddr;JTextField txjoinPhone;
 	JLabel lbjoinID;JLabel lbjoinPW;
 	JLabel lbjoinName;JLabel lbjoinAddr;JLabel lbjoinPhone;
-	
 
 	GUIView() {
 		super("쇼핑몰 프로그램 ver 0.0");
 		
 		JPanel pannel = new JPanel();
 		pannel.setLayout(null);
+		
 		
 		btn1 = new JButton("상품 검색");
 		btn1.setBounds(340,20,130,35);
@@ -69,12 +73,16 @@ public class GUIView extends JFrame implements ActionListener {
 		btn4.addActionListener(this);
 		
 		btn5 = new JButton("로그인");
-		btn5.setBounds(340,200,130,35);
+		btn5.setBounds(200,200,130,35);
 		btn5.addActionListener(this);
 		
 		btn6 = new JButton("로그아웃");
-		btn6.setBounds(340,245,130,35);
+		btn6.setBounds(340,200,130,35);
 		btn6.addActionListener(this);
+		
+		btn7 = new JButton("회원열람");
+		btn7.setBounds(340,245,130,35);
+		btn7.addActionListener(this);
 		
 		//TextArea + ScrollPane
 		area = new JTextArea();
@@ -87,14 +95,16 @@ public class GUIView extends JFrame implements ActionListener {
 		lbprodname = new JLabel("상품명");
 		lbprodname.setBounds(10,20,130,35);
 		
-		pannel.add(btn1);pannel.add(btn2);pannel.add(btn3);pannel.add(btn4);pannel.add(btn5);pannel.add(btn6);
+		pannel.add(btn1);pannel.add(btn2);pannel.add(btn3);pannel.add(btn4);pannel.add(btn5);pannel.add(btn6);pannel.add(btn7);
 		pannel.add(txprodname);pannel.add(lbprodname);
 		pannel.add(scroll);
 		add(pannel);
 		setBounds(100,100,500,500);
-		pannel.setBackground(new Color(250,120,220));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pannel.setBackground(new Color(255,200,230));
 		setVisible(true);
+		setResizable(false);
+		
 		
 		
 		Loginview.setBounds(100,100,500,200);
@@ -122,6 +132,7 @@ public class GUIView extends JFrame implements ActionListener {
 		Loginview.add(loginpanel);
 		Loginview.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Loginview.setVisible(false);
+		Loginview.setResizable(false);
 		loginpanel.setBackground(new Color(180,250,230));
 		
 		
@@ -167,6 +178,7 @@ public class GUIView extends JFrame implements ActionListener {
 		Prodview.add(prodpanel);
 		Prodview.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Prodview.setVisible(false);
+		Prodview.setResizable(false);
 		prodpanel.setBackground(new Color(140,240,250));
 		
 		
@@ -217,6 +229,7 @@ public class GUIView extends JFrame implements ActionListener {
 		Joinview.add(joinpanel);
 		Joinview.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Joinview.setVisible(false);
+		Joinview.setResizable(false);
 		
 	}
 	
@@ -299,29 +312,39 @@ public class GUIView extends JFrame implements ActionListener {
 			else
 			{
 				JOptionPane.showMessageDialog(null, "로그아웃 합니다");
-				controller.ExSubController("/auth", 1, new MemDTO());
 				loginstatus = 0;
 				perm = 0;
 			}
 		}
 		
+		if(e.getSource() == btn7)
+		{
+			if(perm < 2)
+			{
+				JOptionPane.showMessageDialog(null, "권한이 부족합니다");
+			}
+			else
+			{
+				area.setText("");
+				area.append(dao.SelectAll().toString());
+			}
+		}
+		
+		
 		if(e.getSource() == Loginbtn)
 		{
 			String id = txid.getText();
 			String pw = txpw.getText();
-//			System.out.println(dao.Select(id));
 			if(id.equals("") || pw.equals(""))
 			{
 				JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 입력해주세요");
 			}
-			
-			if(dao.Select(id) == null)
-			{
-				JOptionPane.showMessageDialog(null, "존재하지 않는 아이디 입니다.");
-			}
 			else
 			{
 				JOptionPane.showMessageDialog(null, "로그인 했습니다.");
+				loginstatus = 1;
+				perm = 2;
+				Loginview.setVisible(false);
 			}
 			txid.setText("");
 			txpw.setText("");
@@ -343,9 +366,16 @@ public class GUIView extends JFrame implements ActionListener {
 			String Name = txjoinName.getText();
 			String Addr = txjoinAddr.getText();
 			String Phone = txjoinPhone.getText();
-			controller.ExSubController("/mem", 1, new MemDTO(ID, PW, Name, Addr, Phone));
-			JOptionPane.showMessageDialog(null, Name + "님 회원 가입을 환영합니다");
-			Joinview.setVisible(false);
+			if(ID.equals("") || PW.equals("") || Name.equals("") || Addr.equals("") || Phone.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "입력란이 공백일 수 없습니다.");
+			}
+			else
+			{
+				controller.ExSubController("/mem", 1, new MemDTO(ID, PW, Name, Addr, Phone));
+				JOptionPane.showMessageDialog(null, Name + "님 회원 가입을 환영합니다");
+				Joinview.setVisible(false);
+			}
 		}
 		
 		if(e.getSource() == nobtn)
@@ -360,7 +390,17 @@ public class GUIView extends JFrame implements ActionListener {
 			String pname = txprodname2.getText();
 			Integer pamount = Integer.parseInt(txprodamount.getText());
 			Integer price = Integer.parseInt(txprodprice.getText());
-			JOptionPane.showMessageDialog(null, price + "원의 " + pname + " 상품을 " + pamount + "개 등록하여" + price*pamount + "원 입니다");
+			if(pname.equals("") || pamount.equals("") || price.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "입력란이 공백일 수 없습니다.");
+			}
+			else
+			{
+				controller.ExSubController("/prod", 1, new ProdDTO(pname, pamount, price));
+				JOptionPane.showMessageDialog(null, price + "원의 " + pname + " 상품을 " + pamount + "개 등록하여" + price*pamount + "원 입니다");
+				Prodview.setVisible(false);
+				area.setText(price + "원의 " + pname + " 상품을 " + pamount + "개 등록하여 " + price*pamount + "원 입니다");
+			}
 		}
 		
 		if(e.getSource() == EXIT)

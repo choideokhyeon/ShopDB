@@ -9,16 +9,13 @@ public class ProdService {
 	
 	public ProdService() {}
 	
-	public boolean RegisterProd(ProdDTO dto, int permission)
+	public boolean RegisterProd(ProdDTO dto)
 	{
 //		boolean isRegisterOK = true;
 		
-		if(permission >= 2)
-		{
-			int result = dao.Insert(dto);
-			if(result > 0)
-				return true;
-		}
+		int result = dao.Insert(dto);
+		if(result > 0)
+			return true;
 		return false;
 	}
 

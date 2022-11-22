@@ -37,11 +37,6 @@ public class ProdDAO {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		finally
-		{
-			try {conn.close();}
-			catch(Exception e) {e.printStackTrace();}
-		}
 	}
 	
 	public int Insert(ProdDTO dto)

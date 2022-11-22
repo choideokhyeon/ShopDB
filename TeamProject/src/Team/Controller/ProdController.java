@@ -16,14 +16,15 @@ public class ProdController implements SubController{
 		{
 			case 1:	//상품 등록
 				ProdDTO down = (ProdDTO)dto;
-				flag = service.RegisterProd(down, 2);
+				flag = service.RegisterProd(down);
 				if(flag)
 					obj = "[SYSTEM]상품 등록에 성공했습니다";
 				else
 					obj = "[SYSTEM]상품 등록에 실패했습니다";
+				break;
 		}
 		
-		return null;
+		return obj;
 	}
 
 }

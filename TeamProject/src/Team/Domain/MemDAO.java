@@ -1,6 +1,7 @@
 package Team.Domain;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class MemDAO {
 	String id = "SYSTEM";
@@ -70,7 +71,7 @@ public class MemDAO {
 					dto.setJoinDate(rs.getString(6));
 					dto.setPerm(rs.getInt(7));
 					dto.setLoginstatus(rs.getInt(8));
-					System.out.println("MEMDAO : " + dto.getLoginstatus());
+					System.out.println(dto);
 				}
 			}
 		} catch (Exception e) {e.printStackTrace();}
@@ -103,5 +104,36 @@ public class MemDAO {
 		}
 		
 		return result;
+	}
+
+	public ArrayList<MemDTO> SelectAll()
+	{
+		ArrayList<MemDTO> list = new ArrayList<>();
+		try
+		{
+			pstmt = conn.prepareStatement("select * from mem_tbl");
+			rs = pstmt.executeQuery();
+			if(rs != null)
+			{
+				int i = 0;
+				while(rs.next())
+				{
+					MemDTO dto = new MemDTO(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getInt(8));
+					list.add(dto);
+					list.get(i);
+					System.out.println();
+					i++;
+					if(rs.getString(1) == null)
+						break;
+				}
+			}
+		} catch (Exception e) { e.printStackTrace();}
+		finally
+		{
+			try
+			{rs.close(); pstmt.close();}catch(Exception e) {e.printStackTrace();}
+		}
+		
+		return list;
 	}
 }
