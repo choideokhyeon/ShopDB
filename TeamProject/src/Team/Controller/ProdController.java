@@ -22,6 +22,8 @@ public class ProdController implements SubController{
 				else
 					obj = "[SYSTEM]상품 등록에 실패했습니다";
 				break;
+			case 3:
+				break;
 		}
 		
 		return obj;

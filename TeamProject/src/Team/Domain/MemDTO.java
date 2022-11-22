@@ -93,7 +93,7 @@ public class MemDTO extends DTO{
 	
 	@Override
 	public String toString() {
-		return "[아이디 : " + ID + "\n비밀번호 : " + PW + "\n이름 : " + Name + "\n주소 : " + Addr + "\n연락처 : " + Phone + "]\n";
+		return "[아이디 : " + ID + " | 비밀번호 : " + PW + " | 이름 : " + Name + " | 주소 : " + Addr + " | 연락처 : " + Phone + "]\n";
 	}
 	
 	

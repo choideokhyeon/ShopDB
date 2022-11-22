@@ -57,8 +57,8 @@ public class ProdDTO extends DTO{
 
 	@Override
 	public String toString() {
-		return "ProdDTO [prodCode=" + prodCode + ", prodName=" + prodName + ", prodAmount=" + prodAmount + ", price="
-				+ price + "]";
+		return "[상품코드 : " + prodCode + " | 상품명 : " + prodName + " | 상품재고 : " + prodAmount + " | 소비자가격 : "
+				+ price + "]\n";
 	}
 
 }

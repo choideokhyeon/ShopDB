@@ -15,11 +15,11 @@ public class AuthController implements SubController
 		switch(SN)
 		{
 			case 1:
-				MemDTO down = (MemDTO)dto;
-				String id = down.getID();
-				String pw = down.getPW();
-				if(id != null || pw != null)
-					service.LoginCheck(id, pw);
+//				MemDTO down = (MemDTO)dto;
+//				String id = down.getID();
+//				String pw = down.getPW();
+//				if(id != null || pw != null)
+//					service.LoginCheck(id, pw);
 				break;
 			case 2:
 //				MemDTO down2 = (MemDTO)dto;

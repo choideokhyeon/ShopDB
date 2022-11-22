@@ -1,11 +1,12 @@
 package Team.Service;
 
+import Team.Domain.DTO;
 import Team.Domain.ProdDAO;
 import Team.Domain.ProdDTO;
 
 public class ProdService {
 	
-	private ProdDAO dao = ProdDAO.getInstance();
+	private ProdDAO pdao = ProdDAO.getInstance();
 	
 	public ProdService() {}
 	
@@ -13,9 +14,20 @@ public class ProdService {
 	{
 //		boolean isRegisterOK = true;
 		
-		int result = dao.Insert(dto);
+		int result = pdao.Insert(dto);
 		if(result > 0)
 			return true;
+		return false;
+	}
+	
+	public boolean UpdateProd(int prodcode, int pamount, int price)
+	{
+		ProdDTO PDTO = pdao.Select(prodcode);
+		if(pdao.Select(prodcode).getProdName() != null)
+		{
+			pdao.Update(PDTO);
+			return true;
+		}
 		return false;
 	}
 

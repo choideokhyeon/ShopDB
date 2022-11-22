@@ -88,24 +88,6 @@ public class MemDAO {
 //	Method method = MemDAO.class.getMethod("get"+column);
 //	System.out.println("method :" + method.getName());
 	
-	public int Login(MemDTO dto)
-	{
-		int result = 0;
-		try
-		{
-			pstmt = conn.prepareStatement("update mem_tbl set loginstatus=1 where id=?");
-			pstmt.setString(1, dto.getID());
-			result = pstmt.executeUpdate();
-		}catch (Exception e) {e.printStackTrace();}
-		finally
-		{
-			try
-			{rs.close(); pstmt.close();}catch(Exception e) {e.printStackTrace();}
-		}
-		
-		return result;
-	}
-
 	public ArrayList<MemDTO> SelectAll()
 	{
 		ArrayList<MemDTO> list = new ArrayList<>();
@@ -133,7 +115,6 @@ public class MemDAO {
 			try
 			{rs.close(); pstmt.close();}catch(Exception e) {e.printStackTrace();}
 		}
-		
 		return list;
 	}
 }

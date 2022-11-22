@@ -3,6 +3,8 @@ package Team.View;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.naming.ldap.LdapName;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,9 +15,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import Team.Controller.FrontController;
+import Team.Domain.DTO;
 import Team.Domain.MemDAO;
 import Team.Domain.MemDTO;
+import Team.Domain.ProdDAO;
 import Team.Domain.ProdDTO;
+import oracle.net.aso.p;
 
 public class GUIView extends JFrame implements ActionListener {
 	
@@ -40,6 +45,7 @@ public class GUIView extends JFrame implements ActionListener {
 	JButton Insert;JButton Update;JButton Select;JButton EXIT;
 	JLabel lbprodname2;JLabel lbprodamount;JLabel lbprodprice;
 	JTextField txprodname2;JTextField txprodamount;JTextField txprodprice;
+	JTextArea area2;JScrollPane scroll2;
 	
 	//회원 가입 관련 처리
 	JFrame Joinview = new JFrame("회원 가입");
@@ -142,6 +148,10 @@ public class GUIView extends JFrame implements ActionListener {
 		JPanel prodpanel = new JPanel();
 		prodpanel.setLayout(null);
 		
+		area2 = new JTextArea();
+		scroll2 = new JScrollPane(area2);
+		scroll2.setBounds(10,300,465,150);
+		
 		Insert = new JButton("상품 등록");
 		Insert.setBounds(340,20,130,35);
 		Insert.addActionListener(this);
@@ -174,6 +184,7 @@ public class GUIView extends JFrame implements ActionListener {
 		prodpanel.add(Insert);prodpanel.add(Select);prodpanel.add(Update);prodpanel.add(EXIT);
 		prodpanel.add(txprodname2);prodpanel.add(txprodamount);prodpanel.add(txprodprice);
 		prodpanel.add(lbprodname2);prodpanel.add(lbprodamount);prodpanel.add(lbprodprice);
+		prodpanel.add(scroll2);
 		
 		Prodview.add(prodpanel);
 		Prodview.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -236,8 +247,8 @@ public class GUIView extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		MemDAO dao = new MemDAO();
-		MemDTO dto = new MemDTO();
+		MemDAO mdao = new MemDAO();
+		ProdDAO pdao = new ProdDAO();
 		
 		if(e.getSource() == btn1)
 		{
@@ -326,7 +337,7 @@ public class GUIView extends JFrame implements ActionListener {
 			else
 			{
 				area.setText("");
-				area.append(dao.SelectAll().toString());
+				area.append(mdao.SelectAll().toString());
 			}
 		}
 		
@@ -402,6 +413,57 @@ public class GUIView extends JFrame implements ActionListener {
 				area.setText(price + "원의 " + pname + " 상품을 " + pamount + "개 등록하여 " + price*pamount + "원 입니다");
 			}
 		}
+		
+		if(e.getSource() == Select)
+		{
+			String pname = txprodname2.getText();
+			if(pname.equals(""))
+			{
+				area2.setText("");
+				area2.append(pdao.SelectAll().toString());
+			}
+			else
+			{
+				area2.setText("");
+				area2.append(pdao.Select(Integer.parseInt(pname)).toString());
+			}
+		}
+		
+		if(e.getSource() == Update)
+		{
+			String pcode = txprodname2.getText();
+			String pamount = txprodamount.getText();
+			String price = txprodprice.getText();
+			if(pcode.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "상품코드란은 비울 수 없습니다");
+			}
+			else
+			{
+				Integer code = Integer.parseInt(pcode);
+				if(pamount.equals(""))
+				{
+					Integer prc = Integer.parseInt(price);
+					pdao.Update(new ProdDTO(code, pdao.Select(code).getProdName(), pdao.Select(code).getProdAmount(), prc));
+					JOptionPane.showMessageDialog(null, pdao.Select(code).getProdName() + "의 가격이 " + prc + "원으로 조절되었습니다.");
+				}
+				
+				else if(price.equals(""))
+				{
+					Integer pam = Integer.parseInt(pamount);
+					pdao.Update(new ProdDTO(code, pdao.Select(code).getProdName(), pam, pdao.Select(code).getPrice()));
+					JOptionPane.showMessageDialog(null, pdao.Select(code).getProdName() + "의 수량이 " + pam + "개로 조절되었습니다.");
+				}
+				else
+				{
+					Integer prc = Integer.parseInt(price);
+					Integer pam = Integer.parseInt(pamount);
+					pdao.Update(new ProdDTO(code, pdao.Select(code).getProdName(),pam,prc));
+					JOptionPane.showMessageDialog(null, pdao.Select(code).getProdName() + "의 수량이 " + pam + "개 " + prc + "원 으로 조절되었습니다.");
+				}
+			}
+		}
+		
 		
 		if(e.getSource() == EXIT)
 			Prodview.setVisible(false);
